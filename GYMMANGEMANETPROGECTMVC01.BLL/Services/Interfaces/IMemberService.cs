@@ -11,5 +11,11 @@ namespace GYMMANGEMANETPROGECTMVC01.BLL.Services.Interfaces
     {
         Task<IEnumerable<MemberViewModel>> GetAllMembersAsync(CancellationToken ct = default);
         Task<bool> CreateMemberAsync(CreateMemberViewModel memberViewModel, CancellationToken ct = default);
+        Task<MemberViewModel> GetMemberDetailsByIdAsync(int id, CancellationToken ct = default);
+        Task<bool> RemoveMemberAsync(int memberid, CancellationToken ct = default);
+         Task<HealthRecordViewModel> GetHealthRecordAync(int memberid, CancellationToken ct = default);
+         Task<MemberToUpdateViewModel> GetMemberToUpdateASync(int id, CancellationToken ct = default);
+        Task<bool> UpdateMemberDetailsAsync(int id, MemberToUpdateViewModel memberVM, CancellationToken ct = default);
+
     }
 }
