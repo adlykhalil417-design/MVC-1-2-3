@@ -1,3 +1,4 @@
+using GYMMANGEMANETPROGECTMVC01.BLL;
 using GYMMANGEMANETPROGECTMVC01.BLL.Services.Classes;
 using GYMMANGEMANETPROGECTMVC01.BLL.Services.Interfaces;
 using GYMMANGEMANETPROGECTMVC01.DAL.DATA.DbContexts;
@@ -16,12 +17,16 @@ namespace GYMMANGEMANETPROGECTMV01
             
             #region Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<ISessionRepository, SessionRepository>();
+            builder.Services.AddScoped<ISessionService,SessionService>();
             builder.Services.AddScoped<IMemberService, MemberService>();
             builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
             builder.Services.AddDbContext<GymDbContext>(Options =>
             {
                 Options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+            builder.Services.AddAutoMapper(m => m.AddProfile(new MappingProfile()));
             #endregion
             var app = builder.Build();
 

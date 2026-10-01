@@ -13,10 +13,10 @@ namespace GYMMANGEMANETPROGECTMVC01.DAL.Repositories.Interfaces
 
         Task<IEnumerable<TEntity>> GetAllAsync(bool tracking = false, CancellationToken ct = default);
         Task<TEntity> GetByIdAsync(int id, CancellationToken ct = default);
-        Task<int> AddAsync(TEntity TEntity, CancellationToken ct = default);
-        Task<int> UpdateAsync(TEntity TEntity, CancellationToken ct = default);
-        Task<int> DeleteAsync(TEntity TEntity, CancellationToken ct = default);
-
+        void Add(TEntity TEntity);
+        void Update(TEntity TEntity);
+        void Delete(TEntity TEntity);
+        Task<TEntity> FristOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default);
         Task<bool> AnyAsync(Expression<Func<TEntity,bool>> predicate, CancellationToken ct = default);
     }
 }

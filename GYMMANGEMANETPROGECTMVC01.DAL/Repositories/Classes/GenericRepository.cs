@@ -20,21 +20,21 @@ namespace GYMMANGEMANETPROGECTMVC01.DAL.Repositories.Classes
             _dbSet=_dbContext.Set<TEntity>();
         }
 
-        public async Task<int> AddAsync(TEntity TEntity, CancellationToken ct = default)
+        public void Add(TEntity TEntity)
         {
             _dbSet.Add(TEntity);
-            return await _dbContext.SaveChangesAsync(ct);
+       
         }
-        public async Task<int> UpdateAsync(TEntity TEntity, CancellationToken ct = default)
+        public void Update(TEntity TEntity)
         {
             _dbSet.Update(TEntity);
 
-            return await _dbContext.SaveChangesAsync(ct);
+            
         }
-        public async Task<int> DeleteAsync(TEntity TEntity, CancellationToken ct = default)
+        public void Delete(TEntity TEntity)
         {
             _dbSet.Remove(TEntity);
-            return await _dbContext.SaveChangesAsync(ct);
+
         }
 
         public async Task<IEnumerable<TEntity>> GetAllAsync(bool tracking = false, CancellationToken ct = default)
@@ -53,5 +53,12 @@ namespace GYMMANGEMANETPROGECTMVC01.DAL.Repositories.Classes
         {
             return _dbSet.AnyAsync(predicate, ct);  
         }
+
+        public Task<TEntity> FristOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default)
+        {
+            return _dbSet.FirstOrDefaultAsync(predicate,ct);
+        }
+
+      
     }
 }
