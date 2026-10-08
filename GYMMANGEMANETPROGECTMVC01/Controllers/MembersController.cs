@@ -1,6 +1,7 @@
 ﻿using GYMMANGEMANETPROGECTMVC01.BLL.Services.Interfaces;
 using GYMMANGEMANETPROGECTMVC01.BLL.ViewModels.MemberViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Metadata.Ecma335;
 
 namespace GYMMANGEMANETPROGECTMVC01.PL.Controllers
 {
@@ -52,8 +53,96 @@ namespace GYMMANGEMANETPROGECTMVC01.PL.Controllers
         }
         #endregion
 
+        public async Task<IActionResult>MemberDetails(int id,CancellationToken ct)
+        {
+            var member =await  _memberService.GetMemberDetailsByIdAsync(id,ct);
+            if (member == null)
+            {
+                TempData["ErrorMessage"] = "Member not Found";
+                return RedirectToAction(nameof(Index));
+            }
+              return View(member);
+        }
+        public async Task<IActionResult> HealthRecordDetails(int id, CancellationToken ct)
+        {
+            var healthrecord = await _memberService.GetHealthRecordAync(id,ct);
+            if (healthrecord == null)
+            {
+                TempData["ErrorMessage"] = "Health Record not Found";
+                return RedirectToAction(nameof(Index));
+            }
+            return View(healthrecord);
+        }
+        #region editmember 
 
         //Get  UpdateMember
+        [HttpGet]
+        public async Task<IActionResult> EditMember(int Id,CancellationToken ct)
+        {
+            var member=await _memberService.GetMemberToUpdateASync(Id,ct);
+            if (member == null) {
+                TempData["ErrorMessage"] = "Member Not Found";
+                return RedirectToAction(nameof(Index)); 
+            }
+            return View(member);
+
+        }
         //Post UpdateMember
+        [HttpPost]
+        public async Task<IActionResult> EditMember(int id, MemberToUpdateViewModel memberVM, CancellationToken ct = default)
+        {
+            if(!ModelState.IsValid)return View(memberVM);
+            var res=await _memberService.UpdateMemberDetailsAsync(id,memberVM,ct);
+            if (res)
+            {
+                TempData["SuccessMessage"] = "Member  Update Successfully";
+              
+            }
+            else
+            {
+                TempData["ErrorMessage"] = $"Failed To  Update Member  ";
+
+
+            }
+            return RedirectToAction(nameof(Index));
+        }
+        #endregion
+
+        #region delete 
+
+        
+        [HttpGet]
+        public async Task<IActionResult> Delete(int Id, CancellationToken ct)
+        {
+            var member = await _memberService.GetMemberDetailsByIdAsync(Id, ct);
+            if (member == null)
+            {
+                TempData["ErrorMessage"] = "Member Not Found";
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
+
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmed([FromRoute]int id, CancellationToken ct )
+        {
+            
+
+            var res = await _memberService.RemoveMemberAsync(id,  ct);
+            if (res)
+            {
+                TempData["SuccessMessage"] = "Member  Deleted Successfully";
+
+            }
+            else
+            {
+                TempData["ErrorMessage"] = $"Failed To  Deleted Member  ";
+
+
+            }
+            return RedirectToAction(nameof(Index));
+        }
+        #endregion
     }
 }
