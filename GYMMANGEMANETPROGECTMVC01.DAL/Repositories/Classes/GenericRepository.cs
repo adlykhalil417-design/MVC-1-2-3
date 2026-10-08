@@ -59,6 +59,16 @@ namespace GYMMANGEMANETPROGECTMVC01.DAL.Repositories.Classes
             return _dbSet.FirstOrDefaultAsync(predicate,ct);
         }
 
+        public async Task<int> UpdateAsync(Plan plan, CancellationToken ct)
+        {
+            _dbContext.Set<Plan>().Update(plan);
+            return await _dbContext.SaveChangesAsync(ct);
+        }
+
+       
+
       
+
+       
     }
 }

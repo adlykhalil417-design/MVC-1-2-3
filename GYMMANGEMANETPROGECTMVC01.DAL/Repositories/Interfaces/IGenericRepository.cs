@@ -18,5 +18,7 @@ namespace GYMMANGEMANETPROGECTMVC01.DAL.Repositories.Interfaces
         void Delete(TEntity TEntity);
         Task<TEntity> FristOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default);
         Task<bool> AnyAsync(Expression<Func<TEntity,bool>> predicate, CancellationToken ct = default);
+        Task<int> UpdateAsync(Plan plan, CancellationToken ct);
+        
     }
 }

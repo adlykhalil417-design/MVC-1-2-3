@@ -4,13 +4,15 @@ using GYMMANGEMANETPROGECTMVC01.BLL.Services.Interfaces;
 using GYMMANGEMANETPROGECTMVC01.DAL.DATA.DbContexts;
 using GYMMANGEMANETPROGECTMVC01.DAL.Repositories.Classes;
 using GYMMANGEMANETPROGECTMVC01.DAL.Repositories.Interfaces;
+using GYMMANGEMANETPROGECTMVC01.PL;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace GYMMANGEMANETPROGECTMV01
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,8 @@ namespace GYMMANGEMANETPROGECTMV01
             builder.Services.AddScoped<ISessionRepository, SessionRepository>();
             builder.Services.AddScoped<ISessionService,SessionService>();
             builder.Services.AddScoped<IMemberService, MemberService>();
+            builder.Services.AddScoped<IPlanService, PlanService>();
+            builder.Services.AddScoped<ITrainerService, TrainerService>();
             builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
             builder.Services.AddDbContext<GymDbContext>(Options =>
             {
@@ -29,6 +33,20 @@ namespace GYMMANGEMANETPROGECTMV01
             builder.Services.AddAutoMapper(m => m.AddProfile(new MappingProfile()));
             #endregion
             var app = builder.Build();
+
+
+
+
+            await app.MigrateAndSeedDataBaseAsync();
+
+
+
+
+
+
+
+
+
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

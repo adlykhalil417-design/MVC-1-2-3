@@ -58,13 +58,15 @@ namespace GYMMANGEMANETPROGECTMVC01.BLL
         {
             // src:session
             //dest:sessionviewmodel
-            CreateMap<Session, SessionViewModel>()
+            CreateMap< /* src*/ Session,/* dest*/  SessionViewModel>()
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.CategoryName))
                  .ForMember(dest => dest.TrainerName, opt => opt.MapFrom(src => src.Trainer.Name));
             CreateMap<CreateSessionViewModel, Session>();
             CreateMap<Trainer, TrainerSelectViewModel>();
             CreateMap<Category, CategorySelectViewModel>().ForMember(dest=>dest.Name,opt=>opt.MapFrom(src=>src.CategoryName));
-        }
+            
+            CreateMap<Session,UpdateSessionViewModel>().ReverseMap();
+                }
         
 
 
