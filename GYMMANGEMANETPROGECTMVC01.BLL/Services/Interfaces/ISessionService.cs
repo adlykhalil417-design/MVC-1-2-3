@@ -1,4 +1,5 @@
-﻿using GYMMANGEMANETPROGECTMVC01.BLL.ViewModels.SessionViewModels;
+﻿using GYMMANGEMANETPROGECTMVC01.BLL.Common;
+using GYMMANGEMANETPROGECTMVC01.BLL.ViewModels.SessionViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,17 @@ namespace GYMMANGEMANETPROGECTMVC01.BLL.Services.Interfaces
     public interface ISessionService
     {
         Task<IEnumerable<SessionViewModel>> GetAllSessionsAsync(CancellationToken ct = default);
-        Task<bool> CreateSessionAsync(CreateSessionViewModel SessionViewModel, CancellationToken ct = default);
+        Task<Result> CreateSessionAsync(CreateSessionViewModel SessionViewModel, CancellationToken ct = default);
         Task<IEnumerable<TrainerSelectViewModel>>GetTrinersForDropdownAsync(CancellationToken ct = default);
         Task<IEnumerable<CategorySelectViewModel>> GetCategoryForDropdownAsync(CancellationToken ct = default);
+       
+        Task <Result<SessionViewModel?>> GetSessionByIdAsync(int sessionid, CancellationToken ct = default);
+
+        Task<Result<UpdateSessionViewModel>> GetSessionToUpdateAsync(int sessionId, CancellationToken ct = default);
+
+        Task<Result> UpdateSessionAsync(int id,UpdateSessionViewModel createSessionVm, CancellationToken ct = default);
+
+        Task<Result> RemoveSessionAsync(int sessionid, CancellationToken ct = default);
 
     }
 }

@@ -11,5 +11,6 @@ namespace GYMMANGEMANETPROGECTMVC01.DAL.Repositories.Interfaces
     {
         Task<IEnumerable<Session>>GetAllSessionsWithTrainerAndCategoryAsync(CancellationToken ct= default);
         Task<int>GetcountofBookedSlotsAsync(int sessionId,CancellationToken ct= default);
+        Task<Session> GetSessionsByIdWithTrainerAndCategoryAsync(int sessionid,CancellationToken ct = default);
     }
 }

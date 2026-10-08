@@ -1,4 +1,5 @@
-﻿using GYMMANGEMANETPROGECTMVC01.BLL.Services.Classes;
+﻿using GYMMANGEMANETPROGECTMVC01.BLL.Common;
+using GYMMANGEMANETPROGECTMVC01.BLL.Services.Classes;
 using GYMMANGEMANETPROGECTMVC01.BLL.Services.Interfaces;
 using GYMMANGEMANETPROGECTMVC01.BLL.ViewModels.SessionViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -29,8 +30,8 @@ namespace GYMMANGEMANETPROGECTMVC01.PL.Controllers
 
         private async Task PopulateDropdownListAsync()
         {
-            ViewBag.trainers = new SelectList(await _sessionService.GetTrinersForDropdownAsync(), "Id", "Name");
-            ViewBag.categorys = new SelectList(await _sessionService.GetCategoryForDropdownAsync(), "Id", "Name");
+            ViewBag.Trainers = new SelectList(await _sessionService.GetTrinersForDropdownAsync(), "Id", "Name");
+            ViewBag.Categories = new SelectList(await _sessionService.GetCategoryForDropdownAsync(), "Id", "Name");
         }
 
         [HttpPost]
@@ -41,26 +42,107 @@ namespace GYMMANGEMANETPROGECTMVC01.PL.Controllers
             var result = await _sessionService.CreateSessionAsync(vm);
 
 
-            if (result)
+            if (result.sucess)
             {
                 TempData["SuccessMessage"] = "Session Created Successfully";
                 return RedirectToAction(nameof(Index));
             }
-            else
-            {
+           
+             
+                TempData["ErrorMessage"] = result.error;
                 await PopulateDropdownListAsync();
-                TempData["ErrorMessage"] = $"Failed To  Create Session  ";
-            }
 
             return View(vm);
 
 
 
         }
-        #endregion
-    
-        
 
-        
+        [HttpGet]
+        public async Task<IActionResult> Detalis(int id, CancellationToken ct)
+        {
+            var session = await _sessionService.GetSessionByIdAsync(id, ct);
+            if (session.success)
+            {
+                return View(session.value);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = session.error;
+                return RedirectToAction(nameof(Index));
+            }
+           
+        }
+        #endregion
+        #region Edit
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id, CancellationToken ct)
+        {
+            var result = await _sessionService.GetSessionToUpdateAsync(id, ct);
+            if (result.success)
+            {
+                ViewBag.Trainers = new SelectList(await _sessionService.GetTrinersForDropdownAsync(), "Id", "Name");
+                return View(result.value);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = result.error;
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, UpdateSessionViewModel model, CancellationToken ct)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Trainers = new SelectList(await _sessionService.GetTrinersForDropdownAsync(), "Id", "Name");
+                return View(model);
+            }
+
+            var result = await _sessionService.UpdateSessionAsync(id, model, ct);
+
+            if (result.sucess)
+            {
+                TempData["SuccessMessage"] = "Session Updated Successfully";
+
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                TempData["ErrorMessage"] = result.error;
+                ViewBag.Trainers = new SelectList(await _sessionService.GetTrinersForDropdownAsync(), "Id", "Name");
+                return View(model);
+            }
+        }
+        #endregion
+        #region Delete
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id, CancellationToken ct)
+        {
+            var result = await _sessionService.GetSessionByIdAsync(id);
+            if (result.success)
+            {
+                return View();
+            }
+            else
+            {
+                TempData["ErrorMessage"] = result.error;
+                return RedirectToAction(nameof(Index));
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmed(int id, CancellationToken ct)
+        {
+            var res = await _sessionService.RemoveSessionAsync(id, ct);
+            TempData[res.sucess ? "SuccessMessage" : "ErrorMessage"] = res.sucess ? "Session Deleted Successfully" : res.error;
+            return RedirectToAction(nameof(Index));
+        }
+
+        #endregion
+
+
     }
 }

@@ -29,5 +29,11 @@ namespace GYMMANGEMANETPROGECTMVC01.DAL.Repositories.Classes
         {
             return await _dbContext.Bookings.CountAsync(b=> b.SessionId == sessionId);
         }
+
+        public async  Task<Session> GetSessionsByIdWithTrainerAndCategoryAsync(int sessionid, CancellationToken ct = default)
+        {
+            return await  _dbContext.Sessions.AsNoTracking().Include(s=>s.Trainer  ).Include(s=>s.Category).FirstOrDefaultAsync(s=>s.Id==sessionid);
+            
+        }
     }
 }
