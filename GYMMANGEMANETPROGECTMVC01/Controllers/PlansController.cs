@@ -1,9 +1,11 @@
-﻿using GYMMANGEMANETPROGECTMVC01.DAL.Repositories.Interfaces;
-using GYMMANGEMANETPROGECTMVC01.DAL.Models;
+﻿using GYMMANGEMANETPROGECTMVC01.DAL.Models;
+using GYMMANGEMANETPROGECTMVC01.DAL.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GYMMANGEMANETPROGECTMVC01.Controllers
 {
+    [Authorize(Roles = "SuperAdmin")]
     public class PlansController : Controller
     {
         private readonly IGenericRepository<Plan> _planRepository;

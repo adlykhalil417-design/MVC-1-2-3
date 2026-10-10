@@ -1,9 +1,11 @@
 using System.Diagnostics;
 using GYMMANGEMANETPROGECTMVC01.PL.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GYMMANGEMANETPROGECTMV01.Controllers
 {
+    [Authorize(Roles ="Admin,SuperAdmin")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

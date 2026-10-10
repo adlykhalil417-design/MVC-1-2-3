@@ -19,4 +19,10 @@
     <ProjectReference Include="..\GYMMANGEMANETPROGECTMVC01.BLL\GYMMANGEMANETPROGECTMVC01.BLL.csproj" />
   </ItemGroup>
 
+
+
+  <ItemGroup>
+    <Folder Include="MembersPhotos\" />
+  </ItemGroup>
+
 </Project>

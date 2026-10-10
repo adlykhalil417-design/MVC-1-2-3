@@ -1,10 +1,13 @@
 using GYMMANGEMANETPROGECTMVC01.BLL;
+using GYMMANGEMANETPROGECTMVC01.BLL.Services.Attachment;
 using GYMMANGEMANETPROGECTMVC01.BLL.Services.Classes;
 using GYMMANGEMANETPROGECTMVC01.BLL.Services.Interfaces;
 using GYMMANGEMANETPROGECTMVC01.DAL.DATA.DbContexts;
+using GYMMANGEMANETPROGECTMVC01.DAL.Models;
 using GYMMANGEMANETPROGECTMVC01.DAL.Repositories.Classes;
 using GYMMANGEMANETPROGECTMVC01.DAL.Repositories.Interfaces;
 using GYMMANGEMANETPROGECTMVC01.PL;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
@@ -25,26 +28,42 @@ namespace GYMMANGEMANETPROGECTMV01
             builder.Services.AddScoped<IMemberService, MemberService>();
             builder.Services.AddScoped<IPlanService, PlanService>();
             builder.Services.AddScoped<ITrainerService, TrainerService>();
+            builder.Services.AddScoped<IAttachmentService, AttachmentService>();
             builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
             builder.Services.AddDbContext<GymDbContext>(Options =>
             {
                 Options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(config =>
+            {
+                //config.Password.RequiredLength = 6;
+                //config.Password.RequireDigit = false;
+                //config.Password.RequireLowercase = false;
+                //config.Password.RequireUppercase = false;
+
+                config.User.RequireUniqueEmail = true;
+                config.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
+                config.Lockout.MaxFailedAccessAttempts = 5;
+
+            }).AddEntityFrameworkStores<GymDbContext>();
+
+
+            //builder.Services.ConfigureApplicationCookie(options =>
+            //{
+            //    options.LoginPath = "/Account/Login";
+            //    options.AccessDeniedPath = "/Account/AccessDenied";
+            //});
+
+
+
             builder.Services.AddAutoMapper(m => m.AddProfile(new MappingProfile()));
             #endregion
             var app = builder.Build();
 
 
 
-
             await app.MigrateAndSeedDataBaseAsync();
-
-
-
-
-
-
-
 
 
 
@@ -61,11 +80,12 @@ namespace GYMMANGEMANETPROGECTMV01
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Account}/{action=Login}/{id?}");
 
             app.Run();
         }

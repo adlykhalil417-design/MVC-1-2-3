@@ -1,8 +1,10 @@
 ﻿
 using GymManagement.DAL.DATA.DataSeeding;
 using GYMMANGEMANETPROGECTMV01;
+using GYMMANGEMANETPROGECTMVC01.DAL.DATA.DataSeeding;
 using GYMMANGEMANETPROGECTMVC01.DAL.DATA.DbContexts;
-
+using GYMMANGEMANETPROGECTMVC01.DAL.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace GYMMANGEMANETPROGECTMVC01.PL
@@ -15,7 +17,10 @@ namespace GYMMANGEMANETPROGECTMVC01.PL
             using var scope = app.Services.CreateScope();
             var dbcontext = scope.ServiceProvider.GetRequiredService<GymDbContext>();
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-          
+            //dashboard
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
 
 
 
@@ -30,7 +35,10 @@ namespace GYMMANGEMANETPROGECTMVC01.PL
 
             var seedFolderPath = Path.Combine(app.Environment.ContentRootPath, "wwwroot", "Files");
             await GymDataSeeding.SeedAsync(dbcontext, seedFolderPath, logger);
-       
+
+            //dashboard
+            await IdentityDataSeeding.SeedIdentityDataAsync(roleManager, userManager, logger);
+
 
         }
     }

@@ -1,19 +1,26 @@
-﻿using GYMMANGEMANETPROGECTMVC01.BLL.Services.Interfaces;
+﻿using GYMMANGEMANETPROGECTMVC01.BLL.Services.Attachment;
+using GYMMANGEMANETPROGECTMVC01.BLL.Services.Interfaces;
 using GYMMANGEMANETPROGECTMVC01.BLL.ViewModels.MemberViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata.Ecma335;
 
 namespace GYMMANGEMANETPROGECTMVC01.PL.Controllers
 {
+    [Authorize(Roles ="SuperAdmin")]
     public class MembersController : Controller
     {
         private readonly IMemberService _memberService;
+        private readonly IAttachmentService _attachmentService;
 
-        public MembersController(IMemberService memberService)
+        public MembersController(IMemberService memberService,IAttachmentService attachmentService)
         {
-            _memberService = memberService;  
+            _memberService = memberService;
+            _attachmentService = attachmentService;
         }
 
+
+   
         public async Task<IActionResult> Index()
         {
             var members = await _memberService.GetAllMembersAsync();
@@ -24,6 +31,24 @@ namespace GYMMANGEMANETPROGECTMVC01.PL.Controllers
 
         //Get Member Details
 
+
+
+        #region Picture : Get Member Picture
+
+        [HttpGet]
+        public async Task<IActionResult> Picture(int id)
+        {
+            var member = await _memberService.GetMemberDetailsByIdAsync(id);
+
+            if (member is null || string.IsNullOrEmpty(member.Photo)) return NotFound();
+
+
+            var result = _attachmentService.GetFile(member.Photo, "MembersPhotos");
+            return File(result.Value.stream, result.Value.contentType);
+
+        }
+
+        #endregion
 
         #region Create
 
