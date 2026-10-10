@@ -9,6 +9,8 @@ namespace GYMMANGEMANETPROGECTMVC01.BLL.ViewModels.MemberViewModels
 {
     public class MemberToUpdateViewModel
     {
+        public int Id { get; set; }
+
         public string? Name { get; set; }
         public string? Photo { get; set; }
 

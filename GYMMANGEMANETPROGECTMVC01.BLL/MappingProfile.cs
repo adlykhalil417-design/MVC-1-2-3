@@ -42,7 +42,7 @@ namespace GYMMANGEMANETPROGECTMVC01.BLL
                     BuildingNumber = src.BuildingNumber
                 }));
 
-            CreateMap<HealthRecord, HealthRecordViewModel>();
+            CreateMap<HealthRecord, HealthRecordViewModel>().ReverseMap();
 
             CreateMap<CreateMemberViewModel, Member>()
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => new Address

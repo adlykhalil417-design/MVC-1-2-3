@@ -1,8 +1,9 @@
-﻿using GYMMANGEMANETPROGECTMVC01.DAL.Repositories.Interfaces;
+﻿using AutoMapper;
+using GYMMANGEMANETPROGECTMVC01.BLL.Services.Attachment;
 using GYMMANGEMANETPROGECTMVC01.BLL.Services.Interfaces;
 using GYMMANGEMANETPROGECTMVC01.BLL.ViewModels.MemberViewModels;
 using GYMMANGEMANETPROGECTMVC01.DAL.Models;
-using AutoMapper;
+using GYMMANGEMANETPROGECTMVC01.DAL.Repositories.Interfaces;
 
 namespace GYMMANGEMANETPROGECTMVC01.BLL.Services.Classes
 {
@@ -11,11 +12,13 @@ namespace GYMMANGEMANETPROGECTMVC01.BLL.Services.Classes
        
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
+        private readonly IAttachmentService _attachmentService;
 
-        public MemberService(IUnitOfWork uow ,IMapper mapper)
+        public MemberService(IUnitOfWork uow ,IMapper mapper , IAttachmentService attachmentService  )
         {
             _uow = uow;
             _mapper = mapper;
+            _attachmentService = attachmentService;
         }
 
         public async Task<bool> CreateMemberAsync(CreateMemberViewModel memberViewModel, CancellationToken ct = default)
@@ -29,12 +32,26 @@ namespace GYMMANGEMANETPROGECTMVC01.BLL.Services.Classes
 
             if (emailExists || phoneExists) return false;
 
+           var StoredPhotoName= await _attachmentService.UploadAsync(memberViewModel.PhotoFile.OpenReadStream(),memberViewModel.PhotoFile.FileName, "MembersPhotos");
+
          var member=_mapper.Map<Member>(memberViewModel);
+            member.Photo= StoredPhotoName;
               memberRepository.Add(member);
             var res =await _uow.SaveChangesAsync(ct);
-            return res>0;
+            if (res > 0)
+            {
+                return true;
+            }
+            else
+            {
+                //Deleted Uploaded Image
+
+                //storedPhotoName Search -> delete  from MembersPhotos
+                return false;
 
             }
+
+        }
 
         public async Task<IEnumerable<MemberViewModel>> GetAllMembersAsync(CancellationToken ct = default)
         {

@@ -1,9 +1,11 @@
 ﻿using GYMMANGEMANETPROGECTMVC01.DAL.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace GYMMANGEMANETPROGECTMVC01.DAL.DATA.DbContexts
 {
-    public class GymDbContext:DbContext
+    public class GymDbContext:IdentityDbContext<ApplicationUser>
     {
         public GymDbContext(DbContextOptions<GymDbContext>options) :base(options){
         
@@ -16,6 +18,19 @@ namespace GYMMANGEMANETPROGECTMVC01.DAL.DATA.DbContexts
         //}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);//For Identity Configuration
+
+            //
+            //
+            //
+            //
+            modelBuilder.Entity<ApplicationUser>(eb =>
+            {
+                eb.Property(u => u.FirstName).HasColumnType("varchar").HasMaxLength(50);
+                eb.Property(u => u.LastName).HasColumnType("varchar").HasMaxLength(50);
+
+            });
+
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(GymDbContext).Assembly);
         }
         public DbSet<Plan>Plans { get; set; }
